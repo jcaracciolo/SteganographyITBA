@@ -1,6 +1,7 @@
 package ar.edu.itba.crypto;
 
 
+import ar.edu.itba.crypto.utils.ConsoleValues;
 import ar.edu.itba.crypto.utils.InputParser;
 
 /**
@@ -11,8 +12,8 @@ public class App
 {
     public static void main( String[] args )
     {
-        String[] argumentos = {"-h"};
-        InputParser input = new InputParser(argumentos);
-        input.parse();
+        String[] arguments = {"embed","-in", "arg", "-p", "file", "-out", "arg", "-steg", "arg"};
+        InputParser input = new InputParser(arguments);
+        ConsoleValues values = input.parse();
     }
 }
