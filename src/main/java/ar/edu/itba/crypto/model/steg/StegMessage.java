@@ -13,7 +13,6 @@ public abstract class StegMessage {
         int currentBit = bitIndex%8;
         bitIndex+=n;
         byte ans = BitManipulation.getNBits(toStegMessage[byteIndex],currentBit, n);
-        System.out.println(Integer.toBinaryString(ans));
         return ans;
     }
 
