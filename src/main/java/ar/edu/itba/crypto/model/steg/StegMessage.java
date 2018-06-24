@@ -6,7 +6,7 @@ public abstract class StegMessage {
 
     byte[] toStegMessage;
 
-    int bitIndex = 0;
+    private int bitIndex = 0;
 
     public byte getNextBits(int n) {
         int byteIndex = bitIndex/8;
