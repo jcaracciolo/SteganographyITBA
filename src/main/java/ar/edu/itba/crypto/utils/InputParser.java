@@ -99,60 +99,25 @@ public class InputParser {
                 }
             }
             String stegArgs = cmd.getOptionValue(steg);
-            switch (stegArgs) {
-                case "LSB1":
-                    //Implement LSB1
-                    break;
-                case "LSB4":
-                    //Implement LSB4
-                    break;
-                case "LSBE" :
-                    //Implement LSBE
-                    break;
-                default :
-                    throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
+            if(stegArgs != "LSB1" && stegArgs != "LSB4" && stegArgs != "LSBE"){
+                throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
             }
+            
             if(cmd.hasOption(a)){
                 String encryptMethod = cmd.getOptionValue(a);
-                switch (encryptMethod) {
-                    case "aes128":
-                        //Implement AES128
-                        break;
-                    case "aes192":
-                        //Implement AES192
-                        break;
-                    case "aes256":
-                        //Implement AES256
-                        break;
-                    case "des":
-                        //Implement DES
-                        break;
-                    default :
-                        throw new IllegalStateException("a: Invalid arguments for encryption. Use -h,--help for more information");
+                if(encryptMethod != "aes128" && encryptMethod != "aes192" && encryptMethod != "aes256" && encryptMethod != "des"){
+                    throw new IllegalStateException("a: Invalid arguments for encryption. Use -h,--help for more information");
                 }
             }else{
-                //Use aes128
+                String encryptMethod = "aes128";
             }
             if(cmd.hasOption(m)){
                 String encryptionAlgorithm = cmd.getOptionValue(m);
-                switch (encryptionAlgorithm){
-                    case "ecb":
-                        //Implement ecb
-                        break;
-                    case "cfb":
-                        //Implement cfb
-                        break;
-                    case "ofb":
-                        //Implement ofb
-                        break;
-                    case "cbc":
-                        //Implement cbc
-                        break;
-                    default :
-                        throw new IllegalStateException("m: Invalid arguments for encryption algorithm. Use -h,--help for more information");
+                if(encryptionAlgorithm != "ecb" && encryptionAlgorithm != "cfb" && encryptionAlgorithm != "ofb" && encryptionAlgorithm != "cbc"){
+                    throw new IllegalStateException("m: Invalid arguments for encryption algorithm. Use -h,--help for more information");
                 }
             }else{
-                //Implement cbc
+                String encryptAlgorith = "cbc";
             }
             if(cmd.hasOption(pass)){
                 String password = cmd.getOptionValue(pass);
