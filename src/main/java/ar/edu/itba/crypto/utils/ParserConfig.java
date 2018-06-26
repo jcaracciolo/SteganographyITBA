@@ -1,18 +1,36 @@
 package ar.edu.itba.crypto.utils;
 
+import ar.edu.itba.crypto.encryption.BlockMode;
+import ar.edu.itba.crypto.encryption.EncryptAlgorithm;
+
 public class ParserConfig {
 
+    boolean encrypts;
     boolean extract;
     String hidePath;
+    String hideExtension;
     String inPath;
     String outPath;
     SteganographyAlgorithm steg;
 
-    EncryptionAlgorithm encription;
-    EncryptionMode mode;
+    EncryptAlgorithm encription;
+    BlockMode mode;
     String password;
 
-    public ParserConfig(boolean extract, String inPath, String hidePath, String outPath, SteganographyAlgorithm steg, EncryptionAlgorithm encription, EncryptionMode mode, String password) {
+    public boolean isEncrypts() {
+        return encrypts;
+    }
+
+    public String getHidePath() {
+        return hidePath;
+    }
+
+    public String getHideExtension() {
+        return hideExtension;
+    }
+
+    public ParserConfig(boolean encrypts, boolean extract, String inPath, String hidePath, String hideExtension, String outPath, SteganographyAlgorithm steg, EncryptAlgorithm encription, BlockMode mode, String password) {
+        this.encrypts = encrypts;
         this.extract = extract;
         this.hidePath = hidePath;
         this.inPath = inPath;
@@ -39,15 +57,17 @@ public class ParserConfig {
         return steg;
     }
 
-    public EncryptionAlgorithm getEncription() {
+    public EncryptAlgorithm getEncription() {
         return encription;
     }
 
-    public EncryptionMode getMode() {
+    public BlockMode getMode() {
         return mode;
     }
 
     public String getPassword() {
         return password;
     }
+
+    public boolean encrypts() { return encrypts; }
 }

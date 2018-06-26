@@ -24,4 +24,5 @@ public class LSBEnhanced extends Stenographer {
 
         return index;
     }
+
 }
