@@ -23,13 +23,13 @@ public class InputParser {
     private static final String a = "a";
     private static final String m = "m";
     private static final String pass = "pass";
+    private static final String extract = "extract";
 
     /*Placeholders*/
     private File input = null;
     private File bitmapFile = null;
     private File output = null;
-
-
+    private String stegArgs;
 
 
     public InputParser(String[] args) {
@@ -37,6 +37,7 @@ public class InputParser {
 
         options.addOption(helpShortArg, helpArg, false, "show help");
         options.addOption(null, embed, false, "Indica que se va a ocultar la información.");
+        options.addOption(null, extract, false, "Indica que se va a extraer informaciòn");
         options.addOption(null, in, true, "Archivo que se va a ocultar.");
         options.addOption(null, p, true, "Archivo bmp que será el portador.");
         options.addOption(null, out, true, "Archivo bmp de salida, es decir, el archivo bitmapfile con la informacion de file incrustada.");
@@ -54,22 +55,108 @@ public class InputParser {
         try {
             cmd = parser.parse(options, args);
 
-            if(cmd.hasOption(helpShortArg)) {
+            if (cmd.hasOption(helpShortArg)) {
                 showHelp();
                 exit(0);
             }
 
+            if (!cmd.hasOption(embed) && !cmd.hasOption(extract)){
+                String actions = cmd.getOptionValue(embed);
+                throw new IllegalStateException("No action specified. Use -h,--help for more information");
+            } else {
+                if(cmd.hasOption(embed)) {
+                    //Mandatory parameters
+                    if (!cmd.hasOption(in))
+                        throw new IllegalStateException("in: No file specified. Use -h,--help for more information");
+                    String fileName = cmd.getOptionValue(in);
+                    if (!cmd.hasOption(p))
+                        throw new IllegalStateException("p: No bitmap specified. Use -h,--help for more information");
+                    String bitmap = cmd.getOptionValue(p);
+                    if (!cmd.hasOption(out))
+                        throw new IllegalStateException("out: No bitmapFile specified. Use -h,--help for more information");
+                    String outputFile = cmd.getOptionValue(out);
+                    if (!cmd.hasOption(steg))
+                        throw new IllegalStateException("Steg: No arguments specified. Use -h,--help for more information");
+                    String stegArgs = cmd.getOptionValue(steg);
 
-            if(!cmd.hasOption(in)) throw new IllegalStateException("in: No file specified. Use -h,--help for more information");
-            String fileName = cmd.getOptionValue(in);
-            if(!cmd.hasOption(p)) throw new IllegalStateException("p: No bitmap specified. Use -h,--help for more information");
-            String bitmap = cmd.getOptionValue(p);
-            if(!cmd.hasOption(out)) throw new IllegalStateException("out: No bitmapFile specified. Use -h,--help for more information");
-            String outputFile = cmd.getOptionValue(out);
-            if(!cmd.hasOption(steg)) throw new IllegalStateException("Steg: No arguments specified. Use -h,--help for more information");
+                    values = new ConsoleValues(input, bitmapFile, output, steg, a, m, pass);
+                }else {
+                    //Invalid parameters
+                    if (cmd.hasOption(in))
+                        throw new IllegalStateException("Invalid parameter -in for extract action");
+                    String fileName = cmd.getOptionValue(in);
+
+                    //Mandatory parameters
+                    if (!cmd.hasOption(p))
+                        throw new IllegalStateException("p: No bitmap specified. Use -h,--help for more information");
+                    String bitmap = cmd.getOptionValue(p);
+                    if (!cmd.hasOption(out))
+                        throw new IllegalStateException("out: No bitmapFile specified. Use -h,--help for more information");
+                    String outputFile = cmd.getOptionValue(out);
+                    if (!cmd.hasOption(steg))
+                        throw new IllegalStateException("Steg: No arguments specified. Use -h,--help for more information");
+                    String stegArgs = cmd.getOptionValue(steg);
+                }
+            }
             String stegArgs = cmd.getOptionValue(steg);
-
-            values = new ConsoleValues(input,bitmapFile,output,steg,a,m,pass);
+            switch (stegArgs) {
+                case "LSB1":
+                    //Implement LSB1
+                    break;
+                case "LSB4":
+                    //Implement LSB4
+                    break;
+                case "LSBE" :
+                    //Implement LSBE
+                    break;
+                default :
+                    throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
+            }
+            if(cmd.hasOption(a)){
+                String encryptMethod = cmd.getOptionValue(a);
+                switch (encryptMethod) {
+                    case "aes128":
+                        //Implement AES128
+                        break;
+                    case "aes192":
+                        //Implement AES192
+                        break;
+                    case "aes256":
+                        //Implement AES256
+                        break;
+                    case "des":
+                        //Implement DES
+                        break;
+                    default :
+                        throw new IllegalStateException("a: Invalid arguments for encryption. Use -h,--help for more information");
+                }
+            }else{
+                //Use aes128
+            }
+            if(cmd.hasOption(m)){
+                String encryptionAlgorithm = cmd.getOptionValue(m);
+                switch (encryptionAlgorithm){
+                    case "ecb":
+                        //Implement ecb
+                        break;
+                    case "cfb":
+                        //Implement cfb
+                        break;
+                    case "ofb":
+                        //Implement ofb
+                        break;
+                    case "cbc":
+                        //Implement cbc
+                        break;
+                    default :
+                        throw new IllegalStateException("m: Invalid arguments for encryption algorithm. Use -h,--help for more information");
+                }
+            }else{
+                //Implement cbc
+            }
+            if(cmd.hasOption(pass)){
+                String password = cmd.getOptionValue(pass);
+            }
 
 
         } catch (Exception e) {
