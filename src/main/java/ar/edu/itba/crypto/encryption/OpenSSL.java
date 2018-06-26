@@ -4,6 +4,7 @@ import ar.edu.itba.crypto.utils.BitManipulation;
 import javafx.util.Pair;
 
 import javax.crypto.Cipher;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -19,8 +20,9 @@ public class OpenSSL {
         }
 
         byte[] ans = new byte[0];
-        for (int i = 0; ans.length<16; i++) {
-            ans = BitManipulation.concat(ans, key_derive(digest, i, data));
+        for (int i = 0; ans.length<(keySize+ivSize); i++) {
+            byte[] di =  key_derive(digest, i, data);
+            ans = BitManipulation.concat(ans,di);
         }
 
         byte[] key = new byte[keySize];
@@ -33,14 +35,6 @@ public class OpenSSL {
 
     static private byte[] key_derive(MessageDigest digest, int i, byte[] data){
         if(i==0) { return new byte[0]; }
-        return BitManipulation.concat(recHash(digest, key_derive(digest,i-1,data).length, data), data);
-    }
-
-    static private byte[] recHash(MessageDigest digest, int i, byte[] data){
-        if(i<=1){
-            return digest.digest(data);
-        } else {
-            return digest.digest(recHash(digest, i-1, data));
-        }
+        return digest.digest(BitManipulation.concat(key_derive(digest, i-1, data), data));
     }
 }

@@ -18,6 +18,7 @@ import javafx.util.Pair;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 import static java.lang.System.exit;
@@ -30,6 +31,12 @@ import static java.lang.System.setOut;
 public class Main
 {
     public static void main( String[] args ) {
+
+        Pair<byte[], byte[]> pair = OpenSSL.EVP_BytesToKey("margarita".getBytes(), 32, 16);
+
+
+        System.out.println(new BigInteger(1, pair.getKey()).toString(16));
+        System.out.println(new BigInteger(1, pair.getValue()).toString(16));
 
         CipherConfig config = new CipherConfig(BlockMode.CBC, EncryptAlgorithm.AES128, "password".getBytes());
         StegMessage ms = new StegEncriptedMessage(config, new StegPlainMessage("SARASA".getBytes(), ".exe"));
