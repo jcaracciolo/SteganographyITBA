@@ -52,7 +52,7 @@ public class Main
         System.out.println(new String( decypt));
         **/
 
-        ParserConfig parserConfig = new ParserConfig(false,true,"resources/ladoLSBE.bmp","","","outE.pdf",SteganographyAlgorithm.LSBE, EncryptAlgorithm.AES256, BlockMode.CBC,"secreto") ;
+        ParserConfig parserConfig = new ParserConfig(true,true,"resources/ladoLSB4aes256cbc.bmp","","","outenc.pdf",SteganographyAlgorithm.LSB4, EncryptAlgorithm.AES256, BlockMode.CBC,"secreto") ;
         Stenographer sten = getStenographer(parserConfig);
         if(!parserConfig.isExtract()){
             hide(sten,parserConfig);
