@@ -13,6 +13,7 @@ import ar.edu.itba.crypto.steganographer.LSBEnhanced;
 import ar.edu.itba.crypto.steganographer.LSBN;
 import ar.edu.itba.crypto.steganographer.Stenographer;
 import ar.edu.itba.crypto.utils.BitManipulation;
+import ar.edu.itba.crypto.utils.ParserConfig;
 import javafx.util.Pair;
 
 import javax.crypto.Cipher;
@@ -31,6 +32,8 @@ import static java.lang.System.setOut;
 public class Main
 {
     public static void main( String[] args ) {
+
+        ParserConfig pConfig;
 
         Pair<byte[], byte[]> pair = OpenSSL.EVP_BytesToKey("margarita".getBytes(), 32, 16);
 
@@ -51,8 +54,9 @@ public class Main
 
     }
 
-    public static void hideAndSearch(Stenographer sten){
-        PlainBMPImage bytes = FileLoader.read("resources/lado.bmp");
+    public static void hideAndSearch(Stenographer sten, ParserConfig parserConfig){
+
+        PlainBMPImage bytes = FileLoader.read(parserConfig.getInPath());
         StegMessage message = new StegPlainMessage("sarasasdasdasdsasa".getBytes(), ".html");
         sten.insertInto(bytes, message);
         byte[] answer = sten.removeFrom(bytes, false);
