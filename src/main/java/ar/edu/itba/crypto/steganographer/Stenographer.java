@@ -101,7 +101,6 @@ public abstract class Stenographer {
 
                 str.append((char)b);
             }while(b!=(byte)0);
-            str.deleteCharAt(str.length() -1);
         } else {
             byte[] decripted = config.decrypt(answer);
             int decriptedSize = ByteBuffer.wrap(decripted, 0, 4).getInt();
@@ -109,9 +108,10 @@ public abstract class Stenographer {
             int index = decriptedSize + 4;
             while(index<decripted.length) {
                 str.append((char)decripted[index]);
+                index++;
             }
-
         }
+        str.deleteCharAt(str.length() -1);
 
         return new Pair<>(answer, str.toString());
     }
