@@ -1,9 +1,10 @@
 package ar.edu.itba.crypto.utils;
 
+import ar.edu.itba.crypto.encryption.BlockMode;
+import ar.edu.itba.crypto.encryption.EncryptAlgorithm;
+import ar.edu.itba.crypto.steganographer.StegType;
 import org.apache.commons.cli.*;
 
-
-import java.io.File;
 
 import static java.lang.System.exit;
 
@@ -25,11 +26,21 @@ public class InputParser {
     private static final String pass = "pass";
     private static final String extract = "extract";
 
-    /*Placeholders*/
-    private File input = null;
-    private File bitmapFile = null;
-    private File output = null;
+
     private String stegArgs;
+    private String password;
+    private String encryptMethod;
+    private String encryptAlgorithm;
+
+    /*ParserConfig parameters*/
+    private StegType stegParam;
+    private EncryptAlgorithm encryptParam;
+    private BlockMode blockMode;
+    private String bitmap;
+    private String fileName;
+    private String outputName;
+    private Boolean isEmbed = false;
+    private Boolean isExtract = false;
 
 
     public InputParser(String[] args) {
@@ -48,7 +59,7 @@ public class InputParser {
         options.addOption(null, pass, true, "Password de encripción.");
     }
 
-    public ConsoleValues parse() {
+    public ParserConfig parse() {
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
         ConsoleValues values = null;
@@ -61,66 +72,105 @@ public class InputParser {
             }
 
             if (!cmd.hasOption(embed) && !cmd.hasOption(extract)){
-                String actions = cmd.getOptionValue(embed);
                 throw new IllegalStateException("No action specified. Use -h,--help for more information");
             } else {
+                if(cmd.hasOption(embed) && cmd.hasOption(extract)){
+                    throw new IllegalStateException("Cannot perform to actions at once");
+                }
                 if(cmd.hasOption(embed)) {
+                    isEmbed = true;
                     //Mandatory parameters
                     if (!cmd.hasOption(in))
                         throw new IllegalStateException("in: No file specified. Use -h,--help for more information");
-                    String fileName = cmd.getOptionValue(in);
+                    fileName = cmd.getOptionValue(in);
                     if (!cmd.hasOption(p))
                         throw new IllegalStateException("p: No bitmap specified. Use -h,--help for more information");
-                    String bitmap = cmd.getOptionValue(p);
+                    bitmap = cmd.getOptionValue(p);
                     if (!cmd.hasOption(out))
                         throw new IllegalStateException("out: No bitmapFile specified. Use -h,--help for more information");
-                    String outputFile = cmd.getOptionValue(out);
+                    outputName = cmd.getOptionValue(out);
                     if (!cmd.hasOption(steg))
                         throw new IllegalStateException("Steg: No arguments specified. Use -h,--help for more information");
-                    String stegArgs = cmd.getOptionValue(steg);
-
-                    values = new ConsoleValues(input, bitmapFile, output, steg, a, m, pass);
+                    stegArgs = cmd.getOptionValue(steg);
                 }else {
+                    isExtract = true;
                     //Invalid parameters
                     if (cmd.hasOption(in))
                         throw new IllegalStateException("Invalid parameter -in for extract action");
-                    String fileName = cmd.getOptionValue(in);
 
                     //Mandatory parameters
                     if (!cmd.hasOption(p))
                         throw new IllegalStateException("p: No bitmap specified. Use -h,--help for more information");
-                    String bitmap = cmd.getOptionValue(p);
+                    bitmap = cmd.getOptionValue(p);
                     if (!cmd.hasOption(out))
                         throw new IllegalStateException("out: No bitmapFile specified. Use -h,--help for more information");
                     String outputFile = cmd.getOptionValue(out);
                     if (!cmd.hasOption(steg))
                         throw new IllegalStateException("Steg: No arguments specified. Use -h,--help for more information");
-                    String stegArgs = cmd.getOptionValue(steg);
+                    stegArgs = cmd.getOptionValue(steg);
                 }
             }
-            String stegArgs = cmd.getOptionValue(steg);
-            if(stegArgs != "LSB1" && stegArgs != "LSB4" && stegArgs != "LSBE"){
-                throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
+            outputName = cmd.getOptionValue(out);
+            String stegArgs = cmd.getOptionValue(steg).toUpperCase();
+            switch (stegArgs){
+                case "LSB1":
+                    stegParam = StegType.LSB1;
+                    break;
+                case "LSB44":
+                    stegParam = StegType.LSB4;
+                    break;
+                case "LSBE":
+                    stegParam = StegType.LSBE;
+                    break;
+                default:
+                    throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
+
             }
-            
+
             if(cmd.hasOption(a)){
-                String encryptMethod = cmd.getOptionValue(a);
-                if(encryptMethod != "aes128" && encryptMethod != "aes192" && encryptMethod != "aes256" && encryptMethod != "des"){
-                    throw new IllegalStateException("a: Invalid arguments for encryption. Use -h,--help for more information");
+                encryptMethod = cmd.getOptionValue(a).toLowerCase();
+                switch (encryptMethod){
+                    case "aes128":
+                        encryptParam = EncryptAlgorithm.AES128;
+                        break;
+                    case "aes192":
+                        encryptParam = EncryptAlgorithm.AES192;
+                        break;
+                    case "aes256":
+                        encryptParam = EncryptAlgorithm.AES256;
+                        break;
+                    case "des":
+                        encryptParam = EncryptAlgorithm.DES;
+                        break;
+                    default:
+                        throw new IllegalStateException("a: Invalid arguments for encryption. Use -h,--help for more information");
                 }
             }else{
-                String encryptMethod = "aes128";
+                encryptParam = EncryptAlgorithm.AES128;
             }
             if(cmd.hasOption(m)){
-                String encryptionAlgorithm = cmd.getOptionValue(m);
-                if(encryptionAlgorithm != "ecb" && encryptionAlgorithm != "cfb" && encryptionAlgorithm != "ofb" && encryptionAlgorithm != "cbc"){
-                    throw new IllegalStateException("m: Invalid arguments for encryption algorithm. Use -h,--help for more information");
+                encryptAlgorithm = cmd.getOptionValue(m).toLowerCase();
+                switch (encryptAlgorithm) {
+                    case "ecb":
+                        blockMode = BlockMode.ECB;
+                        break;
+                    case "cfb":
+                        blockMode = BlockMode.CFB;
+                        break;
+                    case "ofb":
+                        blockMode = BlockMode.OFB;
+                        break;
+                    case "cbc":
+                        blockMode = BlockMode.CBC;
+                        break;
+                    default:
+                        throw new IllegalStateException("m: Invalid arguments for encryption algorithm. Use -h,--help for more information");
                 }
             }else{
-                String encryptAlgorith = "cbc";
+                blockMode = BlockMode.CBC;
             }
             if(cmd.hasOption(pass)){
-                String password = cmd.getOptionValue(pass);
+                password = cmd.getOptionValue(pass);
             }
 
 
@@ -129,7 +179,19 @@ public class InputParser {
             exit(-1);
         }
 
-        return values;
+        ParserConfig parserConfig = new ParserConfig(
+                isEmbed,
+                isExtract,
+                fileName,
+                bitmap,"",
+                outputName,
+                stegParam,
+                encryptParam,
+                blockMode,
+                password) ;
+
+
+        return parserConfig;
     }
 
     private void showHelp() {

@@ -44,7 +44,9 @@ public class ParserConfig {
         this.mode = mode;
         this.password = password;
         if(isEncrypts()) {
-            this.cipherConfig = new CipherConfig(mode, encription, password.getBytes());
+            if(this.password != null) {
+                this.cipherConfig = new CipherConfig(mode, encription, password.getBytes());
+            }
         }
     }
 
