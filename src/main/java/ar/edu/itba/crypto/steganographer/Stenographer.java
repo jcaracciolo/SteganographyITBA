@@ -1,8 +1,13 @@
 package ar.edu.itba.crypto.steganographer;
 
+import ar.edu.itba.crypto.encryption.CipherConfig;
 import ar.edu.itba.crypto.model.image.PlainBMPImage;
 import ar.edu.itba.crypto.model.steg.StegMessage;
 import ar.edu.itba.crypto.utils.BitManipulation;
+import javafx.util.Pair;
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import static java.lang.System.exit;
 
@@ -41,7 +46,7 @@ public abstract class Stenographer {
 
     }
 
-    public byte[] removeFrom(PlainBMPImage altered, boolean isEncrypted) {
+    public Pair<byte[],String> removeFrom(PlainBMPImage altered, CipherConfig config) {
         currentIndex = -1;
         //n is the amount of bits hidden in a component
         int n = getBitsPerComponent();
@@ -85,7 +90,7 @@ public abstract class Stenographer {
 
         //Get the extension
         StringBuilder str = new StringBuilder();
-        if(!isEncrypted) {
+        if(config == null) {
             byte b = 0;
             do {
                 //Retrieve byte by byte as we have to traverse componentsForByte components
@@ -96,9 +101,19 @@ public abstract class Stenographer {
 
                 str.append((char)b);
             }while(b!=(byte)0);
+            str.deleteCharAt(str.length() -1);
+        } else {
+            byte[] decripted = config.decrypt(answer);
+            int decriptedSize = ByteBuffer.wrap(decripted, 0, 4).getInt();
+            answer = Arrays.copyOfRange(decripted, 4, decriptedSize+4);
+            int index = decriptedSize + 4;
+            while(index<decripted.length) {
+                str.append((char)decripted[index]);
+            }
+
         }
 
-        return BitManipulation.concat(answer, str.toString().getBytes());
+        return new Pair<>(answer, str.toString());
     }
 
 
