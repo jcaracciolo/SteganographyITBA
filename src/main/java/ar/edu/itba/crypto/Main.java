@@ -3,7 +3,6 @@ package ar.edu.itba.crypto;
 import ar.edu.itba.crypto.encryption.BlockMode;
 import ar.edu.itba.crypto.encryption.CipherConfig;
 import ar.edu.itba.crypto.encryption.EncryptAlgorithm;
-import ar.edu.itba.crypto.encryption.OpenSSL;
 import ar.edu.itba.crypto.engine.FileLoader;
 import ar.edu.itba.crypto.model.image.PlainBMPImage;
 import ar.edu.itba.crypto.model.steg.StegEncriptedMessage;
@@ -12,18 +11,11 @@ import ar.edu.itba.crypto.model.steg.StegPlainMessage;
 import ar.edu.itba.crypto.steganographer.LSBEnhanced;
 import ar.edu.itba.crypto.steganographer.LSBN;
 import ar.edu.itba.crypto.steganographer.Stenographer;
-import ar.edu.itba.crypto.utils.BitManipulation;
 import ar.edu.itba.crypto.utils.ParserConfig;
+import ar.edu.itba.crypto.steganographer.StegType;
 import javafx.util.Pair;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-
-import static java.lang.System.exit;
-import static java.lang.System.setOut;
 
 /**
  * Hello world!
@@ -33,8 +25,8 @@ public class Main
 {
     public static void main( String[] args ) {
 
-        ParserConfig pConfig;
 
+        /**
         Pair<byte[], byte[]> pair = OpenSSL.EVP_BytesToKey("margarita".getBytes(), 32, 16);
 
 
@@ -48,19 +40,57 @@ public class Main
         System.out.println(new String( encrupt));
         byte[] decypt = config.decrypt(encrupt);
         System.out.println(new String( decypt));
+        **/
+
+        ParserConfig parserConfig = new ParserConfig(
+                false,
+                true,
+                "resources/ladoLSBE.bmp",
+                "","",
+                "outeeE",
+                StegType.LSBE,
+                EncryptAlgorithm.AES256,
+                BlockMode.CBC,
+                "secreto") ;
+        if(!parserConfig.isExtract()){
+            hide(parserConfig);
+        } else {
+            extract(parserConfig);
+        }
 
 
 
 
     }
 
-    public static void hideAndSearch(Stenographer sten, ParserConfig parserConfig){
+    public static void hide(ParserConfig parserConfig){
+        byte[] messageToHide = FileLoader.GetFileBytes(parserConfig.getHidePath());
+        StegMessage stegMessage = new StegPlainMessage(messageToHide, parserConfig.getHideExtension());
+        PlainBMPImage image = FileLoader.read(parserConfig.getInPath());
 
-        PlainBMPImage bytes = FileLoader.read(parserConfig.getInPath());
-        StegMessage message = new StegPlainMessage("sarasasdasdasdsasa".getBytes(), ".html");
-        sten.insertInto(bytes, message);
-        byte[] answer = sten.removeFrom(bytes, false);
-        System.out.println(new String(answer, StandardCharsets.UTF_8));
+        if (parserConfig.encrypts()){
+            stegMessage = new StegEncriptedMessage(parserConfig.getCipherConfig(),(StegPlainMessage)stegMessage);
+        }
+
+        parserConfig.getSteg().stenographer.insertInto(image, stegMessage);
+        FileLoader.SaveFile(parserConfig.getOutPath(),image.imageData);
+        System.out.println(new String(image.imageData, StandardCharsets.UTF_8));
 
     }
+
+    public static void extract(ParserConfig parserConfig){
+        PlainBMPImage alteredImage = FileLoader.read(parserConfig.getInPath());
+        Pair<byte[],String> hiddenFileData = parserConfig.getSteg().stenographer.removeFrom(alteredImage,parserConfig.getCipherConfig());
+        FileLoader.SaveFile(parserConfig.getOutPath() + hiddenFileData.getValue(), hiddenFileData.getKey());
+    }
+
+//    public static void hideAndSearch(Stenographer sten, ParserConfig parserConfig){
+//
+//        PlainBMPImage bytes = FileLoader.read(parserConfig.getInPath());
+//        StegMessage message = new StegPlainMessage("sarasasdasdasdsasa".getBytes(), ".html");
+//        sten.insertInto(bytes, message);
+//        byte[] answer = sten.removeFrom(bytes, false);
+//        System.out.println(new String(answer, StandardCharsets.UTF_8));
+//
+//    }
 }

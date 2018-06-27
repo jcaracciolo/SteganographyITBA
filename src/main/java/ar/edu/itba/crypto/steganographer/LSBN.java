@@ -19,4 +19,5 @@ public class LSBN extends Stenographer {
     int getNextIndex(int lastIndex, PlainBMPImage image) {
         return lastIndex+1;
     }
+
 }

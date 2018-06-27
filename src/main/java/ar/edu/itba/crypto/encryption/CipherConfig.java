@@ -25,7 +25,7 @@ public class CipherConfig {
 
     public CipherConfig(BlockMode mode, EncryptAlgorithm algorithm, byte[] password){
         keySize = algorithm.keySize;
-        ivSize = algorithm.keySize;
+        ivSize = algorithm.ivSize;
         this.mode = mode;
         this.algorithm = algorithm;
         this.password = password;
