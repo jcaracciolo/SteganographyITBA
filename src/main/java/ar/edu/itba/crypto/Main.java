@@ -14,6 +14,7 @@ import ar.edu.itba.crypto.steganographer.Stenographer;
 import ar.edu.itba.crypto.utils.ParserConfig;
 import ar.edu.itba.crypto.steganographer.StegType;
 import javafx.util.Pair;
+import sun.jvm.hotspot.opto.Block;
 
 import java.nio.charset.StandardCharsets;
 
@@ -41,25 +42,60 @@ public class Main
         byte[] decypt = config.decrypt(encrupt);
         System.out.println(new String( decypt));
         **/
+        /*for (StegType type : StegType.values()){
+            for (EncryptAlgorithm alg: EncryptAlgorithm.values()) {
+                for (BlockMode mode: BlockMode.values()) {
+                    try {
+                        System.out.println(type + "  " + alg + "  " + mode);
+                        ParserConfig parserConfig = new ParserConfig(
+                                true,
+                                true,
+                                "resources/buenosaires.bmp",
+                                "","",
+                                "buenosaires",
+                                type,
+                                alg,
+                                mode,
+                                "solucion") ;
+                        if(!parserConfig.isExtract()){
+                            hide(parserConfig);
+                        } else {
+                            extract(parserConfig);
+                        }
+                    }catch (Exception e) {
 
-        ParserConfig parserConfig = new ParserConfig(
-                false,
+                    }
+                }
+            }
+        }*/
+        /*ParserConfig parserConfig = new ParserConfig(
                 true,
-                "resources/ladoLSBE.bmp",
+                true,
+                "resources/silenceout.wmv",
                 "","",
-                "outeeE",
+                "final",
                 StegType.LSBE,
                 EncryptAlgorithm.AES256,
-                BlockMode.CBC,
-                "secreto") ;
+                BlockMode.CFB,
+                "solucion") ;
         if(!parserConfig.isExtract()){
             hide(parserConfig);
         } else {
             extract(parserConfig);
-        }
+        }*/
+
+        bypassImage();
 
 
+    }
 
+    public static void bypassImage() {
+        CipherConfig cipherConfig = new CipherConfig(BlockMode.CFB,EncryptAlgorithm.AES256, "solucion".getBytes());
+        byte[] video = FileLoader.GetFileBytes("resources/silenceout.wmv");
+        System.out.println(video.length);
+        System.out.println("------------------------");
+        cipherConfig.decrypt(video);
+        System.out.println(video);
 
     }
 
