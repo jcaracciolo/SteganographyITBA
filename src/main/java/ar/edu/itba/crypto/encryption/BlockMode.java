@@ -4,7 +4,7 @@ public enum BlockMode {
     ECB("ecb","ECB", "PKCS5Padding"),
     CFB("cfb","CFB", "NoPadding"),
     OFB("ofb","OFB", "NoPadding"),
-    CBC("cbc","CBC", "NoPadding");
+    CBC("cbc","CBC", "PKCS5Padding");
 
     String name;
     String sslName;

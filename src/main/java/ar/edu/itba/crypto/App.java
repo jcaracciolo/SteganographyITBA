@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 
-public class App 
+public class App
 {
     public static void main( String[] args )
     {
@@ -42,7 +42,7 @@ public class App
 
         String[][] blocks = {block1, block2, block3, block4};
 
-        String[] baseArguments =  {"-extract", "-p", image, "-out", "secret5", "-pass", "solucion"};
+        String[] baseArguments =  {"-embed", "-p", image, "-out", "secret5", "-in", "resources/grupo11/buenosaires.bmp", "-pass", "solucion"};
 
         for(String[] option: options) {
             String[] arguments = concat(baseArguments, option);
