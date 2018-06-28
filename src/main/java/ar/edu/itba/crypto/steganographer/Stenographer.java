@@ -48,13 +48,13 @@ public abstract class Stenographer {
 
     public Pair<byte[],String> removeFrom(PlainBMPImage altered, CipherConfig config) {
         currentIndex = -1;
-        //n is the amount of bits hidden in a component
+        //n is the amount of bits hidden in a2 component
         int n = getBitsPerComponent();
 
         //Components needed to hide the size
         int componentsForSize = BITS_FOR_SIZE/n;
 
-        //Components needed to hide a byte
+        //Components needed to hide a2 byte
         int componentsForByte = 8/n;
 
         int size = 0;
@@ -67,6 +67,7 @@ public abstract class Stenographer {
             size += BitManipulation.getNBits(nextComponent(altered), altered.getBitsPerComponent()-n, n);
         }
 
+        if(size > 100000000) { throw new IllegalStateException(); }
         //Place where the message will be held
         byte[] answer = new byte[size];
 
@@ -81,7 +82,7 @@ public abstract class Stenographer {
             //Get from the next component the n-last bits
             answer[answerByte] += BitManipulation.getNBits(nextComponent(altered), altered.getBitsPerComponent()-n, n);
 
-            //add to answerByte if we completed a byte
+            //add to answerByte if we completed a2 byte
             i++;
             if(i%componentsForByte==0) {
                 answerByte++;
@@ -111,7 +112,9 @@ public abstract class Stenographer {
                 index++;
             }
         }
-        str.deleteCharAt(str.length() -1);
+        while (!Character.isAlphabetic(str.charAt(str.length() -1))) {
+            str.deleteCharAt(str.length() - 1);
+        }
 
         return new Pair<>(answer, str.toString());
     }

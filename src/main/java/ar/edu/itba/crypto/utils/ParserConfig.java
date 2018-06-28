@@ -9,9 +9,9 @@ public class ParserConfig {
 
     boolean encrypts;
     boolean extract;
-    String hidePath;
-    String hideExtension;
+    String bmpPath;
     String inPath;
+    String extension;
     String outPath;
     StegType steg;
 
@@ -25,18 +25,23 @@ public class ParserConfig {
         return encrypts;
     }
 
-    public String getHidePath() {
-        return hidePath;
+    public String getBmpPath() {
+        return bmpPath;
     }
 
-    public String getHideExtension() {
-        return hideExtension;
-    }
-
-    public ParserConfig(boolean encrypts, boolean extract, String inPath, String hidePath, String hideExtension, String outPath, StegType steg, EncryptAlgorithm encription, BlockMode mode, String password) {
+    public ParserConfig(
+            boolean extract,
+            boolean encrypts,
+            String inPath,
+            String bmpPath,
+            String outPath,
+            StegType steg,
+            EncryptAlgorithm encription,
+            BlockMode mode,
+            String password) {
         this.encrypts = encrypts;
         this.extract = extract;
-        this.hidePath = hidePath;
+        this.bmpPath = bmpPath;
         this.inPath = inPath;
         this.outPath = outPath;
         this.steg = steg;
@@ -44,8 +49,17 @@ public class ParserConfig {
         this.mode = mode;
         this.password = password;
         if(isEncrypts()) {
-            this.cipherConfig = new CipherConfig(mode, encription, password.getBytes());
+            if(this.password != null) {
+                this.cipherConfig = new CipherConfig(mode, encription, password.getBytes());
+            }
         }
+
+        if(inPath!=null) {
+            int i = inPath.lastIndexOf('.');
+            extension = inPath.substring(i+1);
+        }
+
+
     }
 
     public boolean isExtract() {
@@ -62,6 +76,10 @@ public class ParserConfig {
 
     public StegType getSteg() {
         return steg;
+    }
+
+    public String getExtension() {
+        return extension;
     }
 
     public EncryptAlgorithm getEncription() {

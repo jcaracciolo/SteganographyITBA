@@ -5,8 +5,6 @@ import ar.edu.itba.crypto.utils.BitManipulation;
 
 public class StegEncriptedMessage extends StegMessage {
 
-    byte[] toStegMessage;
-
     public StegEncriptedMessage(CipherConfig config, StegPlainMessage message){
         byte[] plainStegMessage = message.toStegMessage;
         byte[] encrypted = config.encrypt(plainStegMessage);
