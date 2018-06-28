@@ -11,80 +11,83 @@ import ar.edu.itba.crypto.utils.InputParser;
 import ar.edu.itba.crypto.utils.ParserConfig;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+import static java.lang.System.exit;
 
 
 public class App
 {
-    public static void main( String[] args )
-    {
-//        String image = "resources/ladoLSB4aes256cbc.bmp";
-//
-//
-//        String[] option1 = { "-steg", "LSB1"};
-//        String[] option2 = { "-steg", "LSB4"};
-//        String[] option3 = { "-steg", "LSBE"};
-//
-//        String[][] options = { option1, option2, option3 };
-//
-//        String[] alg1 = { "-a", "aes128"};
-//        String[] alg2 = { "-a", "aes192"};
-//        String[] alg3 = { "-a", "aes256"};
-//        String[] alg4 = { "-a", "des"};
-//
-//        String[][] algs = {alg1, alg2, alg3, alg4};
-//
-//        String[] block1 = { "-m", "ecb"};
-//        String[] block2 = { "-m", "cfb"};
-//        String[] block3 = { "-m", "ofb"};
-//        String[] block4 = { "-m", "cbc"};
-//
-//        String[][] blocks = {block1, block2, block3, block4};
-//
-//        String[] baseArguments =  {"-extract", "-p", image, "-out", "extractedSecret", "-pass", "solucion"};
-////        String[] baseArguments =  {"-embed", "-p", image, "-in", "resources/grupo11/lima_bmp_plain_LSBE.pdf", "-out", "embedSecret", "-pass", "solucion"};
-//
-//        for(String[] option: options) {
-//            String[] arguments = concat(baseArguments, option);
-//            try {
-//                actualMain(arguments);
-//                System.out.println(toStringAr(arguments));
-//
-////                System.exit(0);
-//            }catch (Exception e) {
-//                System.out.println(e);
-//            }
-//        }
-//
-//        for(String[] option: options) {
-//            for(String[] algo: algs) {
-//                for (String[] mode : blocks) {
-//
-//                    String[] arguments = concat(baseArguments, option, algo, mode);
-//                    try {
-//                        actualMain(arguments);
-//                        System.out.println(toStringAr(arguments));
-//
-////                        System.exit(0);
-//                    } catch (Exception e) {
-//                        System.out.println(e);
-//                    }
-//                }
-//            }
-//        }
-
-//        String[] baseArguments =  {
-//                "-extract",
-//                "-p", "resources/ladoLSB4aes256ofb.bmp",
-//                "-out", "extractedSecret3",
-//                "-pass", "secreto",
-//                "-a", "aes256",
-//                "-m", "ofb",
-//                "-steg", "LSB4"
-//        };
-
+    public static void main( String[] args ) {
         actualMain(args);
+    }
+
+
+    public static void testAllOptions() {
+        String image = "resources/ladoLSB4aes256cbc.bmp";
+
+
+        String[] option1 = { "-steg", "LSB1"};
+        String[] option2 = { "-steg", "LSB4"};
+        String[] option3 = { "-steg", "LSBE"};
+
+        String[][] options = { option1, option2, option3 };
+
+        String[] alg1 = { "-a", "aes128"};
+        String[] alg2 = { "-a", "aes192"};
+        String[] alg3 = { "-a", "aes256"};
+        String[] alg4 = { "-a", "des"};
+
+        String[][] algs = {alg1, alg2, alg3, alg4};
+
+        String[] block1 = { "-m", "ecb"};
+        String[] block2 = { "-m", "cfb"};
+        String[] block3 = { "-m", "ofb"};
+        String[] block4 = { "-m", "cbc"};
+
+        String[][] blocks = {block1, block2, block3, block4};
+
+        String[] baseArguments =  {"-extract", "-p", image, "-out", "extractedSecret", "-pass", "solucion"};
+//        String[] baseArguments =  {"-embed", "-p", image, "-in", "resources/grupo11/lima_bmp_plain_LSBE.pdf", "-out", "embedSecret", "-pass", "solucion"};
+
+        for(String[] option: options) {
+            String[] arguments = concat(baseArguments, option);
+            try {
+                actualMain(arguments);
+                System.out.println(toStringAr(arguments));
+            }catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        for(String[] option: options) {
+            for(String[] algo: algs) {
+                for (String[] mode : blocks) {
+
+                    String[] arguments = concat(baseArguments, option, algo, mode);
+                    try {
+                        actualMain(arguments);
+                        System.out.println(toStringAr(arguments));
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void fileGenerator(int bits) {
+        byte[] file = FileLoader.GetFileBytes("resources/grupo11/silence.bmp");
+        int size = (int)(file.length/8*bits * 0.7);
+        Random rand = new Random();
+        for (int i = 0; i <size ; i++) {
+            file[i]=(byte)rand.nextInt();
+        }
+        FileLoader.SaveFile("rand4", Arrays.copyOf(file,size));
     }
 
     public static void actualMain(String[] arguments) {
@@ -101,7 +104,14 @@ public class App
 
     public static void extract(ParserConfig parserConfig){
         PlainBMPImage alteredImage = FileLoader.read(parserConfig.getBmpPath());
-        Pair<byte[],String> hiddenFileData = parserConfig.getSteg().stenographer.removeFrom(alteredImage,parserConfig.getCipherConfig());
+        Pair<byte[],String> hiddenFileData;
+        try {
+            hiddenFileData = parserConfig.getSteg().stenographer.removeFrom(alteredImage,parserConfig.getCipherConfig());
+        }catch (ArrayIndexOutOfBoundsException a) {
+            System.err.println("Encripted size must be wrong");
+            exit(-1);
+        }
+
         FileLoader.SaveFile(parserConfig.getOutPath() + hiddenFileData.getValue(), hiddenFileData.getKey());
     }
 
@@ -114,7 +124,12 @@ public class App
             stegMessage = new StegEncriptedMessage(parserConfig.getCipherConfig(),(StegPlainMessage)stegMessage);
         }
 
-        parserConfig.getSteg().stenographer.insertInto(image, stegMessage);
+        try {
+            parserConfig.getSteg().stenographer.insertInto(image, stegMessage);
+        }catch (ArrayIndexOutOfBoundsException a) {
+            System.err.println("File is too big");
+            exit(-1);
+        }
         FileLoader.SaveFile(parserConfig.getOutPath(),image.imageData);
     }
 

@@ -6,6 +6,9 @@ import ar.edu.itba.crypto.steganographer.StegType;
 import org.apache.commons.cli.*;
 
 
+import java.util.Arrays;
+import java.util.function.Supplier;
+
 import static java.lang.System.exit;
 
 public class InputParser {
@@ -112,20 +115,12 @@ public class InputParser {
             }
             outputName = cmd.getOptionValue(out);
             String stegArgs = cmd.getOptionValue(steg).toUpperCase();
-            switch (stegArgs){
-                case "LSB1":
-                    stegParam = StegType.LSB1;
-                    break;
-                case "LSB4":
-                    stegParam = StegType.LSB4;
-                    break;
-                case "LSBE":
-                    stegParam = StegType.LSBE;
-                    break;
-                default:
-                    throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
 
-            }
+
+            Supplier<IllegalStateException> suplier = () ->
+                     new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
+            stegParam = Arrays.stream(StegType.values()).filter(s -> s.name.equals(stegArgs) ).findAny().orElseThrow(suplier);
+
 
             if(cmd.hasOption(a)){
                 isEncrypt = true;
