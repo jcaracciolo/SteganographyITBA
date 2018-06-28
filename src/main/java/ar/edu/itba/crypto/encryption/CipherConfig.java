@@ -3,6 +3,7 @@ package ar.edu.itba.crypto.encryption;
 import javafx.util.Pair;
 
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -52,6 +53,8 @@ public class CipherConfig {
         try {
             setupCipher(Cipher.ENCRYPT_MODE);
             return cipher.doFinal(message);
+        }catch (IllegalBlockSizeException e) {
+            System.err.println("Illegal block size");
         }catch (Exception e){
             System.err.println("The encryption parameters must be wrong");
             exit(-1);
@@ -64,6 +67,8 @@ public class CipherConfig {
         try {
             setupCipher(Cipher.DECRYPT_MODE);
             return cipher.doFinal(message);
+        }catch (IllegalBlockSizeException e) {
+            System.err.println("Illegal block size");
         }catch (Exception e){
             System.err.println("The encryption parameters must be wrong");
             exit(-1);

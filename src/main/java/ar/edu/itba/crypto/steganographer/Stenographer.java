@@ -67,7 +67,6 @@ public abstract class Stenographer {
             size += BitManipulation.getNBits(nextComponent(altered), altered.getBitsPerComponent()-n, n);
         }
 
-        if(size > 100000000) { throw new IllegalStateException(); }
         //Place where the message will be held
         byte[] answer = new byte[size];
 

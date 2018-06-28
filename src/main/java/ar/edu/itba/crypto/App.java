@@ -19,7 +19,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        String image = "resources/grupo11/lima.bmp";
+        String image = "resources/ladoLSB4aes256cbc.bmp";
 
 
         String[] option1 = { "-steg", "LSB1"};
@@ -42,7 +42,8 @@ public class App
 
         String[][] blocks = {block1, block2, block3, block4};
 
-        String[] baseArguments =  {"-embed", "-p", image, "-out", "secret5", "-in", "resources/grupo11/buenosaires.bmp", "-pass", "solucion"};
+        String[] baseArguments =  {"-extract", "-p", image, "-out", "extractedSecret", "-pass", "solucion"};
+//        String[] baseArguments =  {"-embed", "-p", image, "-in", "resources/grupo11/lima_bmp_plain_LSBE.pdf", "-out", "embedSecret", "-pass", "solucion"};
 
         for(String[] option: options) {
             String[] arguments = concat(baseArguments, option);
@@ -73,10 +74,22 @@ public class App
             }
         }
 
-
+//        String[] baseArguments =  {
+//                "-extract",
+//                "-p", "resources/ladoLSB4aes256ofb.bmp",
+//                "-out", "extractedSecret3",
+//                "-pass", "secreto",
+//                "-a", "aes256",
+//                "-m", "ofb",
+//                "-steg", "LSB4"
+//        };
+//
+//        actualMain(baseArguments);
     }
 
     public static void actualMain(String[] arguments) {
+        System.out.println(toStringAr(arguments));
+
         InputParser input = new InputParser(arguments);
         ParserConfig config = input.parse();
         if(config.isExtract()) {

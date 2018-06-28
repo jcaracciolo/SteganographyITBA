@@ -45,9 +45,9 @@ public class FileLoader {
             os.write(fileData);
             os.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("File Not Found");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("IO Exception");
         }
     }
 }
