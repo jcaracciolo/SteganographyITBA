@@ -40,8 +40,12 @@ public class CipherConfig {
 
         SecretKeySpec key = new SecretKeySpec(keyBytes, algorithm.sslName);
         IvParameterSpec iv = new IvParameterSpec(ivBytes);
-        cipher = Cipher.getInstance(algorithm.sslName + "/" + mode.sslName + "/PKCS5Padding");
-        cipher.init(encryptionMode, key, iv);
+        cipher = Cipher.getInstance(algorithm.sslName + "/" + mode.sslName + "/" + mode.padding);
+        if(mode == BlockMode.ECB) {
+            cipher.init(encryptionMode, key);
+        }else {
+            cipher.init(encryptionMode, key, iv);
+        }
     }
 
     public byte[] encrypt(byte[] message){

@@ -39,17 +39,17 @@ public class InputParser {
     private String bitmap;
     private String fileName;
     private String outputName;
-    private Boolean isEmbed = false;
     private Boolean isExtract = false;
+    private Boolean isEncrypt = false;
 
 
     public InputParser(String[] args) {
         this.args = args;
 
         options.addOption(helpShortArg, helpArg, false, "show help");
-        options.addOption(null, embed, false, "Indica que se va a ocultar la información.");
-        options.addOption(null, extract, false, "Indica que se va a extraer informaciòn");
-        options.addOption(null, in, true, "Archivo que se va a ocultar.");
+        options.addOption(null, embed, false, "Indica que se va a2 ocultar la información.");
+        options.addOption(null, extract, false, "Indica que se va a2 extraer informaciòn");
+        options.addOption(null, in, true, "Archivo que se va a2 ocultar.");
         options.addOption(null, p, true, "Archivo bmp que será el portador.");
         options.addOption(null, out, true, "Archivo bmp de salida, es decir, el archivo bitmapfile con la informacion de file incrustada.");
         options.addOption(null, steg, true, "algoritmo de estenografiado: LSB de 1 bit, LSB de 4 bits, LSB Enhanced");
@@ -75,10 +75,10 @@ public class InputParser {
                 throw new IllegalStateException("No action specified. Use -h,--help for more information");
             } else {
                 if(cmd.hasOption(embed) && cmd.hasOption(extract)){
-                    throw new IllegalStateException("Cannot perform to actions at once");
+                    throw new IllegalStateException("Cannot perform 2 actions at once");
                 }
                 if(cmd.hasOption(embed)) {
-                    isEmbed = true;
+                    isExtract = false;
                     //Mandatory parameters
                     if (!cmd.hasOption(in))
                         throw new IllegalStateException("in: No file specified. Use -h,--help for more information");
@@ -116,7 +116,7 @@ public class InputParser {
                 case "LSB1":
                     stegParam = StegType.LSB1;
                     break;
-                case "LSB44":
+                case "LSB4":
                     stegParam = StegType.LSB4;
                     break;
                 case "LSBE":
@@ -128,6 +128,7 @@ public class InputParser {
             }
 
             if(cmd.hasOption(a)){
+                isEncrypt = true;
                 encryptMethod = cmd.getOptionValue(a).toLowerCase();
                 switch (encryptMethod){
                     case "aes128":
@@ -143,7 +144,7 @@ public class InputParser {
                         encryptParam = EncryptAlgorithm.DES;
                         break;
                     default:
-                        throw new IllegalStateException("a: Invalid arguments for encryption. Use -h,--help for more information");
+                        throw new IllegalStateException("a2: Invalid arguments for encryption. Use -h,--help for more information");
                 }
             }else{
                 encryptParam = EncryptAlgorithm.AES128;
@@ -180,10 +181,10 @@ public class InputParser {
         }
 
         ParserConfig parserConfig = new ParserConfig(
-                isEmbed,
                 isExtract,
+                isEncrypt,
                 fileName,
-                bitmap,"",
+                bitmap,
                 outputName,
                 stegParam,
                 encryptParam,
