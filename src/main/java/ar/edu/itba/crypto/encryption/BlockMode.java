@@ -2,7 +2,7 @@ package ar.edu.itba.crypto.encryption;
 
 public enum BlockMode {
     ECB("ecb","ECB", "PKCS5Padding"),
-    CFB("cfb","CFB", "NoPadding"),
+    CFB("cfb","CFB8", "NoPadding"),
     OFB("ofb","OFB", "NoPadding"),
     CBC("cbc","CBC", "PKCS5Padding");
 
