@@ -19,60 +19,60 @@ public class App
 {
     public static void main( String[] args )
     {
-        String image = "resources/ladoLSB4aes256cbc.bmp";
-
-
-        String[] option1 = { "-steg", "LSB1"};
-        String[] option2 = { "-steg", "LSB4"};
-        String[] option3 = { "-steg", "LSBE"};
-
-        String[][] options = { option1, option2, option3 };
-
-        String[] alg1 = { "-a", "aes128"};
-        String[] alg2 = { "-a", "aes192"};
-        String[] alg3 = { "-a", "aes256"};
-        String[] alg4 = { "-a", "des"};
-
-        String[][] algs = {alg1, alg2, alg3, alg4};
-
-        String[] block1 = { "-m", "ecb"};
-        String[] block2 = { "-m", "cfb"};
-        String[] block3 = { "-m", "ofb"};
-        String[] block4 = { "-m", "cbc"};
-
-        String[][] blocks = {block1, block2, block3, block4};
-
-        String[] baseArguments =  {"-extract", "-p", image, "-out", "extractedSecret", "-pass", "solucion"};
-//        String[] baseArguments =  {"-embed", "-p", image, "-in", "resources/grupo11/lima_bmp_plain_LSBE.pdf", "-out", "embedSecret", "-pass", "solucion"};
-
-        for(String[] option: options) {
-            String[] arguments = concat(baseArguments, option);
-            try {
-                actualMain(arguments);
-                System.out.println(toStringAr(arguments));
-
-//                System.exit(0);
-            }catch (Exception e) {
-                System.out.println(e);
-            }
-        }
-
-        for(String[] option: options) {
-            for(String[] algo: algs) {
-                for (String[] mode : blocks) {
-
-                    String[] arguments = concat(baseArguments, option, algo, mode);
-                    try {
-                        actualMain(arguments);
-                        System.out.println(toStringAr(arguments));
-
-//                        System.exit(0);
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                }
-            }
-        }
+//        String image = "resources/ladoLSB4aes256cbc.bmp";
+//
+//
+//        String[] option1 = { "-steg", "LSB1"};
+//        String[] option2 = { "-steg", "LSB4"};
+//        String[] option3 = { "-steg", "LSBE"};
+//
+//        String[][] options = { option1, option2, option3 };
+//
+//        String[] alg1 = { "-a", "aes128"};
+//        String[] alg2 = { "-a", "aes192"};
+//        String[] alg3 = { "-a", "aes256"};
+//        String[] alg4 = { "-a", "des"};
+//
+//        String[][] algs = {alg1, alg2, alg3, alg4};
+//
+//        String[] block1 = { "-m", "ecb"};
+//        String[] block2 = { "-m", "cfb"};
+//        String[] block3 = { "-m", "ofb"};
+//        String[] block4 = { "-m", "cbc"};
+//
+//        String[][] blocks = {block1, block2, block3, block4};
+//
+//        String[] baseArguments =  {"-extract", "-p", image, "-out", "extractedSecret", "-pass", "solucion"};
+////        String[] baseArguments =  {"-embed", "-p", image, "-in", "resources/grupo11/lima_bmp_plain_LSBE.pdf", "-out", "embedSecret", "-pass", "solucion"};
+//
+//        for(String[] option: options) {
+//            String[] arguments = concat(baseArguments, option);
+//            try {
+//                actualMain(arguments);
+//                System.out.println(toStringAr(arguments));
+//
+////                System.exit(0);
+//            }catch (Exception e) {
+//                System.out.println(e);
+//            }
+//        }
+//
+//        for(String[] option: options) {
+//            for(String[] algo: algs) {
+//                for (String[] mode : blocks) {
+//
+//                    String[] arguments = concat(baseArguments, option, algo, mode);
+//                    try {
+//                        actualMain(arguments);
+//                        System.out.println(toStringAr(arguments));
+//
+////                        System.exit(0);
+//                    } catch (Exception e) {
+//                        System.out.println(e);
+//                    }
+//                }
+//            }
+//        }
 
 //        String[] baseArguments =  {
 //                "-extract",
@@ -83,8 +83,8 @@ public class App
 //                "-m", "ofb",
 //                "-steg", "LSB4"
 //        };
-//
-//        actualMain(baseArguments);
+
+        actualMain(args);
     }
 
     public static void actualMain(String[] arguments) {
