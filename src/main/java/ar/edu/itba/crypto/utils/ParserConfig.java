@@ -56,7 +56,7 @@ public class ParserConfig {
 
         if(inPath!=null) {
             int i = inPath.lastIndexOf('.');
-            extension = inPath.substring(i+1);
+            extension = inPath.substring(i);
         }
 
 

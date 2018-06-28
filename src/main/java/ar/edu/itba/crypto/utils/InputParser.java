@@ -6,6 +6,9 @@ import ar.edu.itba.crypto.steganographer.StegType;
 import org.apache.commons.cli.*;
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -174,6 +177,26 @@ public class InputParser {
             System.err.println("An error was found: " + e.getMessage());
             exit(-1);
         }
+
+        try {
+            if (fileName != null) {
+                Path filePath = Paths.get(fileName);
+                if (Files.notExists(filePath)) {
+                    System.err.println("Path " + fileName + "not found");
+                    exit(-1);
+                }
+            }
+            Path bmpPath = Paths.get(bitmap);
+            if (Files.notExists(bmpPath)) {
+                System.err.println("Path " + bmpPath + "not found");
+                exit(-1);
+            }
+        }catch (Exception e) {
+            System.err.println("Error found when opening paths");
+            exit(-1);
+        }
+
+
 
         ParserConfig parserConfig = new ParserConfig(
                 isExtract,
