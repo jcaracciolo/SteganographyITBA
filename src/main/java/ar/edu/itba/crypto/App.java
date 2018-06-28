@@ -11,15 +11,25 @@ import ar.edu.itba.crypto.utils.InputParser;
 import ar.edu.itba.crypto.utils.ParserConfig;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+import static java.lang.System.exit;
 
 
 public class App
 {
-    public static void main( String[] args )
-    {
-        String image = "resources/ladoLSB4aes256cbc.bmp";
+    public static void main( String[] args ) {
+//        String[] arguments = {"-embed","-in", "README.md","-p", "white.bmp", "-out", "arg", "-steg", "LSB1"};
+        testAllOptions();
+    }
+
+
+    public static void testAllOptions() {
+        String image = "white.bmp";
 
 
         String[] option1 = { "-steg", "LSB1"};
@@ -42,16 +52,14 @@ public class App
 
         String[][] blocks = {block1, block2, block3, block4};
 
-        String[] baseArguments =  {"-extract", "-p", image, "-out", "extractedSecret", "-pass", "solucion"};
-//        String[] baseArguments =  {"-embed", "-p", image, "-in", "resources/grupo11/lima_bmp_plain_LSBE.pdf", "-out", "embedSecret", "-pass", "solucion"};
+        String[] embedBaseArguments =  {"-embed", "-p", image, "-in", "logo.png", "-pass", "solucion"};
 
         for(String[] option: options) {
-            String[] arguments = concat(baseArguments, option);
+            String[] outFile = { "-out", toStrWithDots(option) };
+            String[] arguments = concat(embedBaseArguments, outFile, option);
             try {
                 actualMain(arguments);
                 System.out.println(toStringAr(arguments));
-
-//                System.exit(0);
             }catch (Exception e) {
                 System.out.println(e);
             }
@@ -60,13 +68,11 @@ public class App
         for(String[] option: options) {
             for(String[] algo: algs) {
                 for (String[] mode : blocks) {
-
-                    String[] arguments = concat(baseArguments, option, algo, mode);
+                    String[] outFile = { "-out", toStrWithDots(concat(option, algo, mode)) };
+                    String[] arguments = concat(embedBaseArguments, option, algo, mode, outFile);
                     try {
                         actualMain(arguments);
                         System.out.println(toStringAr(arguments));
-
-//                        System.exit(0);
                     } catch (Exception e) {
                         System.out.println(e);
                     }
@@ -74,17 +80,48 @@ public class App
             }
         }
 
-//        String[] baseArguments =  {
-//                "-extract",
-//                "-p", "resources/ladoLSB4aes256ofb.bmp",
-//                "-out", "extractedSecret3",
-//                "-pass", "secreto",
-//                "-a", "aes256",
-//                "-m", "ofb",
-//                "-steg", "LSB4"
-//        };
-//
-//        actualMain(baseArguments);
+        String[] extractBaseArguments =  {"-extract", "-pass", "solucion"};
+
+
+        for(String[] option: options) {
+            String[] outFile = { "-out", toStrWithDots(option) + "out" };
+            String[] inFile = { "-p", toStrWithDots(option) };
+            String[] arguments = concat(extractBaseArguments, outFile, inFile, option);
+            try {
+                actualMain(arguments);
+                System.out.println(toStringAr(arguments));
+            }catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        for(String[] option: options) {
+            for(String[] algo: algs) {
+                for (String[] mode : blocks) {
+                    String[] outFile = { "-out", toStrWithDots(concat(option, algo, mode)) + "out" };
+                    String[] inFile = { "-p", toStrWithDots(concat(option, algo, mode)) };
+                    String[] arguments = concat(embedBaseArguments, option, algo, mode, outFile, inFile);
+                    try {
+                        actualMain(arguments);
+                        System.out.println(toStringAr(arguments));
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    public static void fileGenerator(int bits) {
+        byte[] file = FileLoader.GetFileBytes("resources/grupo11/silence.bmp");
+        int size = (int)(file.length/8*bits * 0.7);
+        Random rand = new Random();
+        for (int i = 0; i <size ; i++) {
+            file[i]=(byte)rand.nextInt();
+        }
+        FileLoader.SaveFile("rand4", Arrays.copyOf(file,size));
     }
 
     public static void actualMain(String[] arguments) {
@@ -101,7 +138,14 @@ public class App
 
     public static void extract(ParserConfig parserConfig){
         PlainBMPImage alteredImage = FileLoader.read(parserConfig.getBmpPath());
-        Pair<byte[],String> hiddenFileData = parserConfig.getSteg().stenographer.removeFrom(alteredImage,parserConfig.getCipherConfig());
+        Pair<byte[],String> hiddenFileData = null;
+        try {
+            hiddenFileData = parserConfig.getSteg().stenographer.removeFrom(alteredImage,parserConfig.getCipherConfig());
+        }catch (ArrayIndexOutOfBoundsException a) {
+            System.err.println("Encripted size must be wrong");
+            exit(-1);
+        }
+
         FileLoader.SaveFile(parserConfig.getOutPath() + hiddenFileData.getValue(), hiddenFileData.getKey());
     }
 
@@ -114,7 +158,12 @@ public class App
             stegMessage = new StegEncriptedMessage(parserConfig.getCipherConfig(),(StegPlainMessage)stegMessage);
         }
 
-        parserConfig.getSteg().stenographer.insertInto(image, stegMessage);
+        try {
+            parserConfig.getSteg().stenographer.insertInto(image, stegMessage);
+        }catch (ArrayIndexOutOfBoundsException a) {
+            System.err.println("File is too big");
+            exit(-1);
+        }
         FileLoader.SaveFile(parserConfig.getOutPath(),image.imageData);
     }
 
@@ -133,6 +182,15 @@ public class App
             }
         }
         return result;
+    }
+
+    public static String toStrWithDots(String[] strings) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < strings.length; i++) {
+            builder.append(strings[i]);
+            builder.append("-");
+        }
+        return builder.toString().replace("-","A");
     }
 
     public static String toStringAr(String[] strings) {

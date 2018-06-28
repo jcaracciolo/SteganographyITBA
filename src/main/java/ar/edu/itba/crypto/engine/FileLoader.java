@@ -1,7 +1,6 @@
 package ar.edu.itba.crypto.engine;
 
 import ar.edu.itba.crypto.model.image.PlainBMPImage;
-import com.sun.xml.internal.fastinfoset.tools.FI_DOM_Or_XML_DOM_SAX_SAXEvent;
 
 import java.io.*;
 import java.nio.file.Files;

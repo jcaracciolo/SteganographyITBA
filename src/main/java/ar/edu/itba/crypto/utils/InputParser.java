@@ -6,6 +6,12 @@ import ar.edu.itba.crypto.steganographer.StegType;
 import org.apache.commons.cli.*;
 
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.function.Supplier;
+
 import static java.lang.System.exit;
 
 public class InputParser {
@@ -112,20 +118,12 @@ public class InputParser {
             }
             outputName = cmd.getOptionValue(out);
             String stegArgs = cmd.getOptionValue(steg).toUpperCase();
-            switch (stegArgs){
-                case "LSB1":
-                    stegParam = StegType.LSB1;
-                    break;
-                case "LSB4":
-                    stegParam = StegType.LSB4;
-                    break;
-                case "LSBE":
-                    stegParam = StegType.LSBE;
-                    break;
-                default:
-                    throw new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
 
-            }
+
+            Supplier<IllegalStateException> suplier = () ->
+                     new IllegalStateException("Steg: Invalid arguments specified. Use -h,--help for more information");
+            stegParam = Arrays.stream(StegType.values()).filter(s -> s.name.equals(stegArgs) ).findAny().orElseThrow(suplier);
+
 
             if(cmd.hasOption(a)){
                 isEncrypt = true;
@@ -179,6 +177,26 @@ public class InputParser {
             System.err.println("An error was found: " + e.getMessage());
             exit(-1);
         }
+
+        try {
+            if (fileName != null) {
+                Path filePath = Paths.get(fileName);
+                if (Files.notExists(filePath)) {
+                    System.err.println("Path " + fileName + "not found");
+                    exit(-1);
+                }
+            }
+            Path bmpPath = Paths.get(bitmap);
+            if (Files.notExists(bmpPath)) {
+                System.err.println("Path " + bmpPath + "not found");
+                exit(-1);
+            }
+        }catch (Exception e) {
+            System.err.println("Error found when opening paths");
+            exit(-1);
+        }
+
+
 
         ParserConfig parserConfig = new ParserConfig(
                 isExtract,
