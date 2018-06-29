@@ -14,6 +14,6 @@ public class LSBBlue extends Stenographer {
         if(lastIndex == -1) {
             return 2;
         }
-        return lastIndex+1;
+        return lastIndex+3;
     }
 }

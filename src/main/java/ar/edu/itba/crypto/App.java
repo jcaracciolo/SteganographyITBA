@@ -23,20 +23,24 @@ import static java.lang.System.exit;
 public class App
 {
     public static void main( String[] args ) {
-//        String[] arguments = {"-embed","-in", "README.md","-p", "white.bmp", "-out", "arg", "-steg", "LSB1"};
-        testAllOptions();
+//        String[] arguments = {"-h","-in", "README.md","-p", "white.bmp", "-out", "arg", "-steg", "LSB1"};
+        actualMain(args);
     }
 
 
     public static void testAllOptions() {
-        String image = "white.bmp";
+        String image = "lado.bmp";
 
 
         String[] option1 = { "-steg", "LSB1"};
         String[] option2 = { "-steg", "LSB4"};
         String[] option3 = { "-steg", "LSBE"};
+        String[] option4 = { "-steg", "LSBRED"};
+        String[] option5 = { "-steg", "LSBGREEN"};
+        String[] option6 = { "-steg", "LSBBLUE"};
+        String[] option8 = { "-steg", "LSBPAIR"};
 
-        String[][] options = { option1, option2, option3 };
+        String[][] options = { option1, option2, option3, option4, option5, option6, option8 };
 
         String[] alg1 = { "-a", "aes128"};
         String[] alg2 = { "-a", "aes192"};
@@ -52,10 +56,10 @@ public class App
 
         String[][] blocks = {block1, block2, block3, block4};
 
-        String[] embedBaseArguments =  {"-embed", "-p", image, "-in", "logo.png", "-pass", "solucion"};
+        String[] embedBaseArguments =  {"-embed", "-p", image, "-in", "logo.resized.resized.png", "-pass", "solucion"};
 
         for(String[] option: options) {
-            String[] outFile = { "-out", toStrWithDots(option) };
+            String[] outFile = { "-out", toStrWithDots(option) + ".bmp" };
             String[] arguments = concat(embedBaseArguments, outFile, option);
             try {
                 actualMain(arguments);
@@ -68,7 +72,7 @@ public class App
         for(String[] option: options) {
             for(String[] algo: algs) {
                 for (String[] mode : blocks) {
-                    String[] outFile = { "-out", toStrWithDots(concat(option, algo, mode)) };
+                    String[] outFile = { "-out", toStrWithDots(concat(option, algo, mode)) + ".bmp" };
                     String[] arguments = concat(embedBaseArguments, option, algo, mode, outFile);
                     try {
                         actualMain(arguments);
@@ -85,7 +89,7 @@ public class App
 
         for(String[] option: options) {
             String[] outFile = { "-out", toStrWithDots(option) + "out" };
-            String[] inFile = { "-p", toStrWithDots(option) };
+            String[] inFile = { "-p", toStrWithDots(option) + ".bmp" };
             String[] arguments = concat(extractBaseArguments, outFile, inFile, option);
             try {
                 actualMain(arguments);
@@ -99,8 +103,8 @@ public class App
             for(String[] algo: algs) {
                 for (String[] mode : blocks) {
                     String[] outFile = { "-out", toStrWithDots(concat(option, algo, mode)) + "out" };
-                    String[] inFile = { "-p", toStrWithDots(concat(option, algo, mode)) };
-                    String[] arguments = concat(embedBaseArguments, option, algo, mode, outFile, inFile);
+                    String[] inFile = { "-p", toStrWithDots(concat(option, algo, mode)) + ".bmp" };
+                    String[] arguments = concat(extractBaseArguments, option, algo, mode, outFile, inFile);
                     try {
                         actualMain(arguments);
                         System.out.println(toStringAr(arguments));
@@ -116,12 +120,12 @@ public class App
 
     public static void fileGenerator(int bits) {
         byte[] file = FileLoader.GetFileBytes("resources/grupo11/silence.bmp");
-        int size = (int)(file.length/8*bits * 0.7);
+        int size = (int)(file.length/8*bits * 0.3);
         Random rand = new Random();
-        for (int i = 0; i <size ; i++) {
-            file[i]=(byte)rand.nextInt();
+        for (int i = 56; i <size ; i++) {
+            file[i]=(byte)0xFFFFFFFF;
         }
-        FileLoader.SaveFile("rand4", Arrays.copyOf(file,size));
+        FileLoader.SaveFile("white.bmp", Arrays.copyOf(file,size));
     }
 
     public static void actualMain(String[] arguments) {
@@ -190,7 +194,7 @@ public class App
             builder.append(strings[i]);
             builder.append("-");
         }
-        return builder.toString().replace("-","A");
+        return builder.toString().replace("-","_");
     }
 
     public static String toStringAr(String[] strings) {

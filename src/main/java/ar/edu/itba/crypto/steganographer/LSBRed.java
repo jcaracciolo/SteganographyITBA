@@ -14,7 +14,7 @@ public class LSBRed extends Stenographer {
         if(lastIndex == -1) {
             return 0;
         }
-        return lastIndex+1;
+        return lastIndex+3;
     }
 
 }

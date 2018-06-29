@@ -58,7 +58,9 @@ public class InputParser {
         options.addOption(null, in, true, "Archivo que se va a2 ocultar.");
         options.addOption(null, p, true, "Archivo bmp que será el portador.");
         options.addOption(null, out, true, "Archivo bmp de salida, es decir, el archivo bitmapfile con la informacion de file incrustada.");
-        options.addOption(null, steg, true, "algoritmo de estenografiado: LSB de 1 bit, LSB de 4 bits, LSB Enhanced");
+        options.addOption(null, steg, true, "algoritmo de estenografiado: (LSB1) de 1 bit, (LSB4)" +
+                " de 4 bits, (LSBE) Enhanced, (LSBPair) 2 bits cada 2 componentes, (LBSRed) 4 bits en rojas, " +
+                "(LBSBlue) 4 bits en azules, (LBSGreen) 4 bits en verdes");
         /*Opcionales*/
         options.addOption(null, a, true, "aes128 | aes192 | aes256 | des");
         options.addOption(null, m, true, "ecb | cfb | ofb | cbc");

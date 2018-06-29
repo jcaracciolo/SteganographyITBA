@@ -5,7 +5,6 @@ public enum StegType {
     LSB4("LSB4", new LSBN(4)),
     LSBE("LSBE", new LSBEnhanced()),
     LSBPair("LSBPAIR", new LSBPair()),
-    LSBBig("LSBBIG", new LSBBig()),
     LSBRED("LSBRED", new LSBRed()),
     LSBGREEN("LSBGREEN", new LSBGreen()),
     LSBBLUE("LSBBLUE", new LSBBlue());

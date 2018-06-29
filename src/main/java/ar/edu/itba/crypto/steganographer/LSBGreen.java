@@ -14,6 +14,6 @@ public class LSBGreen extends Stenographer {
         if(lastIndex == -1) {
             return 1;
         }
-        return lastIndex+1;
+        return lastIndex+3;
     }
 }
