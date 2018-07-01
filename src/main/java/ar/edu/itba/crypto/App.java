@@ -8,8 +8,8 @@ import ar.edu.itba.crypto.model.steg.StegMessage;
 import ar.edu.itba.crypto.model.steg.StegPlainMessage;
 import ar.edu.itba.crypto.utils.ConsoleValues;
 import ar.edu.itba.crypto.utils.InputParser;
+import ar.edu.itba.crypto.utils.MyPair;
 import ar.edu.itba.crypto.utils.ParserConfig;
-import javafx.util.Pair;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -142,7 +142,7 @@ public class App
 
     public static void extract(ParserConfig parserConfig){
         PlainBMPImage alteredImage = FileLoader.read(parserConfig.getBmpPath());
-        Pair<byte[],String> hiddenFileData = null;
+        MyPair<byte[],String> hiddenFileData = null;
         try {
             hiddenFileData = parserConfig.getSteg().stenographer.removeFrom(alteredImage,parserConfig.getCipherConfig());
         }catch (ArrayIndexOutOfBoundsException a) {

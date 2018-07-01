@@ -4,7 +4,7 @@ import ar.edu.itba.crypto.encryption.CipherConfig;
 import ar.edu.itba.crypto.model.image.PlainBMPImage;
 import ar.edu.itba.crypto.model.steg.StegMessage;
 import ar.edu.itba.crypto.utils.BitManipulation;
-import javafx.util.Pair;
+import ar.edu.itba.crypto.utils.MyPair;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public abstract class Stenographer {
 
     }
 
-    public Pair<byte[],String> removeFrom(PlainBMPImage altered, CipherConfig config) {
+    public MyPair<byte[],String> removeFrom(PlainBMPImage altered, CipherConfig config) {
         currentIndex = -1;
         //n is the amount of bits hidden in a2 component
         int n = getBitsPerComponent();
@@ -115,7 +115,7 @@ public abstract class Stenographer {
             str.deleteCharAt(str.length() - 1);
         }
 
-        return new Pair<>(answer, str.toString());
+        return new MyPair<>(answer, str.toString());
     }
 
 

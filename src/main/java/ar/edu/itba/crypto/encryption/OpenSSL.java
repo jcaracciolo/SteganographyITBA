@@ -1,7 +1,7 @@
 package ar.edu.itba.crypto.encryption;
 
 import ar.edu.itba.crypto.utils.BitManipulation;
-import javafx.util.Pair;
+import ar.edu.itba.crypto.utils.MyPair;
 
 import javax.crypto.Cipher;
 import java.math.BigInteger;
@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 public class OpenSSL {
 
-    public static Pair<byte[],byte[]> EVP_BytesToKey(byte[] data, int keySize, int ivSize) {
+    public static MyPair<byte[],byte[]> EVP_BytesToKey(byte[] data, int keySize, int ivSize) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -30,7 +30,7 @@ public class OpenSSL {
 
         System.arraycopy(ans, 0,key, 0, keySize);
         System.arraycopy(ans, keySize,iv, 0, ivSize);
-        return new Pair<>(key, iv);
+        return new MyPair<>(key, iv);
     }
 
     static private byte[] key_derive(MessageDigest digest, int i, byte[] data){

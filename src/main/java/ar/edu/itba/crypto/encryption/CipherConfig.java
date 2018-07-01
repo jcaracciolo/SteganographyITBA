@@ -1,6 +1,7 @@
 package ar.edu.itba.crypto.encryption;
 
-import javafx.util.Pair;
+
+import ar.edu.itba.crypto.utils.MyPair;
 
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -35,7 +36,7 @@ public class CipherConfig {
     }
 
     private void setupCipher(int encryptionMode) throws InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException {
-        Pair<byte[], byte[]> pair = OpenSSL.EVP_BytesToKey(password,keySize,ivSize);
+        MyPair<byte[], byte[]> pair = OpenSSL.EVP_BytesToKey(password,keySize,ivSize);
         byte[] keyBytes = pair.getKey();
         byte[] ivBytes = pair.getValue();
 
